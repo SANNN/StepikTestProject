@@ -12,13 +12,13 @@ class ProductPage(BasePage):
 		add_to_basket.click()
 	def should_be_success_message(self):
 		time.sleep(4)
-		add_to_basket_element = self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_MSG)
-		add_to_basket_msg = add_to_basket_element.text
+		added_to_basket_element = self.browser.find_element(*ProductPageLocators.ADDED_PRODUCT_IN_BASKET_MSG)
+		added_to_basket_product = added_to_basket_element.text
 		product_name_element = self.browser.find_element(*ProductPageLocators.PRODUCT_NAME)
 		product_name = product_name_element.text
-		assert product_name in add_to_basket_msg, \
-		f"Message about add product in basket is not correct"
-		print(f"Product '{product_name}' in your basket")
+		assert product_name == added_to_basket_product, \
+		f"Added product '{added_to_basket_product}' in basket is not correct '{product_name}'"
+		print(f"Product name '{added_to_basket_product}' in basket and product name '{product_name}'")
 	def should_be_price_in_basket_equal_price_of_product(self):
 		# Сначала проверяем, что элементы присутствуют на странице
 		assert self.is_element_present(*ProductPageLocators.BASKET_PRICE), (
@@ -28,4 +28,10 @@ class ProductPage(BasePage):
 		product_price_element = self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE)
 		product_price = product_price_element.text
 		basket_price = self.browser.find_element(*ProductPageLocators.BASKET_PRICE).text
-		assert product_price in basket_price, f"Price in basket is NOT equal to price of product"
+		assert product_price == basket_price, f"Price in basket '{basket_price}' is NOT equal to price of product '{product_price}'"
+	def should_not_be_success_message(self):
+		assert self.is_not_element_present(*ProductPageLocators.ADDED_PRODUCT_SUCCESS_MSG),\
+		"Success message is presented"
+	def should_success_message_disappear(self):
+		assert self.is_disappeared(*ProductPageLocators.ADDED_PRODUCT_SUCCESS_MSG),\
+		"Success message is not disappeared"
